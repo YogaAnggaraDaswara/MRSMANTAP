@@ -1,0 +1,431 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Mobile.master.cs" Inherits="MRS.Site_Mobile" %>
+<%@ Register Src="~/ViewSwitcher.ascx" TagPrefix="friendlyUrls" TagName="ViewSwitcher" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Monitoring Reporting System"/>
+    <meta name="author" content="MRS"/>
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina"/>
+
+    <title>Bank MANTAP - MRS</title>
+
+    <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
+    
+    <link href="../MRS/assets/font-awesome/css/font-awesomeee.css" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+    <link href="../MRS/assets/css/date_picker.css" rel="stylesheet" />
+    <link href="../MRS/assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="../MRS/assets/css/zabuto_calendar.css" rel="stylesheet" />
+    <link href="../MRS/assets/js/gritter/css/jquery.gritter.css" rel="stylesheet" />
+    <link href="../MRS/assets/css/style.css" rel="stylesheet" />
+    <link href="../MRS/assets/css/table-responsive.css" rel="stylesheet" />
+    <link href="../MRS/assets/css/style-responsive.css" rel="stylesheet" />
+    <script src="../MRS/assets/js/chart-master/Chart.js" type="text/javascript"></script>
+    <!-- #include file="../MRS/assets/uc/date_picker.html"> -->
+    <!-- #include file="../MRS/assets/uc/UC_Date.html"> -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script language="JavaScript" type="text/javascript">
+
+        if (top != self) { top.location = self.location; }
+
+        var warn_window = null;
+        var can_close = true;
+        var appurl = '';
+        function warn_close(nochk) {
+            if (!nochk && !can_close) return;
+            if (warn_window != null)
+                try {
+                    warn_window.opener = null;
+                    warn_window.close();
+                    warn_window = null;
+                } catch (e) { }
+        }
+        function warn_timeout() {
+            if (warn_window != null) return;
+            var X = (screen.availWidth - 380) / 2;
+            var Y = (screen.availHeight - 350) / 2;
+
+            try { app_url = document.frames(1).document.location.href; }
+            catch (e) { }
+            can_close = false;
+            window.focus();
+            warn_window = window.open("warning.html", "losmnt",
+                "height=350px,width=380px,left=" + X + ",top=" + Y +
+                ",status=no,toolbar=no,scrollbars=no,titlebar=no,menubar=no,location=no,dependent=yes");
+        }
+        function warn_closed() {
+            warn_window = null;
+            try {
+                if (document.frames(2).document.readyState == 'interactive' || document.frames(2).document.readyState == 'complete')
+                    document.frames(2).document.parentWindow.execScript('reset_post()');
+            } catch (e) { }
+        }
+        function logout_now() {
+            warn_close(true);
+            top.location.href = '../Account/Logout.aspx';
+        }
+        function postback() {
+            form1.post_cnt.value = eval(form1.post_cnt.value + '+1');
+            form1.submit();
+        }
+        function set_post() {
+            try {
+                if (form1.post_cnt.value == '4') window.parent.execScript('warn_timeout()');
+                if (form1.post_cnt.value == '6') window.parent.execScript('logout_now()');
+                else setTimeout('postback()', form1.Session_Time.value);
+            } catch (e) { }
+        }
+        function reset_post() {
+            form1.post_cnt.value = 0;
+            //clearTimeout(timer);
+            //set_post();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <h1>Mobile Master Page</h1>
+        <asp:ContentPlaceHolder runat="server" ID="FeaturedContent" />
+        <section class="content-wrapper main-content clear-fix">
+              <!--header start-->
+        <header class="header black-bg">
+            <div class="sidebar-toggle-box">
+                <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+            </div>
+            <!--logo start-->
+            <a href="../MRS/Dashboard.aspx" class="logo"><b>MRS</b></a>
+            <!--logo end-->
+            <%--<div class="nav notify-row" id="top_menu">
+                <!--  notification start -->
+                <ul class="nav top-menu">
+                    <!-- settings start -->
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="../MRS/Default.aspx">
+                            <i class="fa fa-tasks"></i>
+                            <span class="badge bg-theme">4</span>
+                        </a>
+                        <ul class="dropdown-menu extended tasks-bar">
+                            <div class="notify-arrow notify-arrow-green"></div>
+                            <li>
+                                <p class="green">You have 4 pending tasks</p>
+                            </li>
+                            <li>
+                                <a href="../MRS/Default.aspx">
+                                    <div class="task-info">
+                                        <div class="desc">DashGum Admin Panel</div>
+                                        <div class="percent">40%</div>
+                                    </div>
+                                    <div class="progress progress-striped">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                            <span class="sr-only">40% Complete (success)</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../MRS/Default.aspx">
+                                    <div class="task-info">
+                                        <div class="desc">Database Update</div>
+                                        <div class="percent">60%</div>
+                                    </div>
+                                    <div class="progress progress-striped">
+                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                            <span class="sr-only">60% Complete (warning)</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../MRS/Default.aspx">
+                                    <div class="task-info">
+                                        <div class="desc">Product Development</div>
+                                        <div class="percent">80%</div>
+                                    </div>
+                                    <div class="progress progress-striped">
+                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                            <span class="sr-only">80% Complete</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../MRS/Default.aspx">
+                                    <div class="task-info">
+                                        <div class="desc">Payments Sent</div>
+                                        <div class="percent">70%</div>
+                                    </div>
+                                    <div class="progress progress-striped">
+                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
+                                            <span class="sr-only">70% Complete (Important)</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="external">
+                                <a href="#">See All Tasks</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- settings end -->
+                    <!-- inbox dropdown start-->
+                    <li id="header_inbox_bar" class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="../MRS/Default.aspx">
+                            <i class="fa fa-envelope-o"></i>
+                            <span class="badge bg-theme">5</span>
+                        </a>
+                        <ul class="dropdown-menu extended inbox">
+                            <div class="notify-arrow notify-arrow-green"></div>
+                            <li>
+                                <p class="green">You have 5 new messages</p>
+                            </li>
+                            <li>
+                                <a href="../MRS/Default.aspx">
+                                    <span class="photo">
+                                        <img alt="avatar" src="assets/img/ui-zac.jpg"></span>
+                                    <span class="subject">
+                                        <span class="from">Zac Snider</span>
+                                        <span class="time">Just now</span>
+                                    </span>
+                                    <span class="message">Hi mate, how is everything?
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.html#">
+                                    <span class="photo">
+                                        <img alt="avatar" src="assets/img/ui-divya.jpg"></span>
+                                    <span class="subject">
+                                        <span class="from">Divya Manian</span>
+                                        <span class="time">40 mins.</span>
+                                    </span>
+                                    <span class="message">Hi, I need your help with this.
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.html#">
+                                    <span class="photo">
+                                        <img alt="avatar" src="assets/img/ui-danro.jpg"></span>
+                                    <span class="subject">
+                                        <span class="from">Dan Rogers</span>
+                                        <span class="time">2 hrs.</span>
+                                    </span>
+                                    <span class="message">Love your new Dashboard.
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.html#">
+                                    <span class="photo">
+                                        <img alt="avatar" src="assets/img/ui-sherman.jpg"></span>
+                                    <span class="subject">
+                                        <span class="from">Dj Sherman</span>
+                                        <span class="time">4 hrs.</span>
+                                    </span>
+                                    <span class="message">Please, answer asap.
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.html#">See all messages</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- inbox dropdown end -->
+                </ul>
+                <!--  notification end -->
+            </div>--%>
+            <div class="top-menu">
+                <ul class="nav pull-right top-menu">
+                    <li><a class="logout" onclick="return logout_now();">Logout</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--header end-->
+ <!--sidebar start-->
+        <aside>
+            <div id="sidebar" class="nav-collapse ">
+                <!-- sidebar menu start-->
+                <ul class="sidebar-menu" id="nav-accordion">
+
+                    <%--<p class="centered">
+                        <img src="../MRS/assets/img/profile.jpg"" class="img-circle" width="60"></p>--%>
+
+                    <div style="background-color: white"><center>
+                        <img src="../MRS/assets/img/mantap.jpeg" width="50%" /></center>
+
+                    </div>
+                    <h4 class="centered" style="color:white"><asp:Label ID="lbl_user" runat="server"></asp:Label></h4>
+                    <h6  class="centered" style="color:white">  <asp:Label class="centered" ID="lbl_role" runat="server"></asp:Label></h6>
+                    <li class="mt">
+                        <a  href="../MRS/Dashboard.aspx">
+                            <i class="fa fa-dashboard"></i>
+                            <span>Dashboard MRS</span>
+                        </a>
+                    </li>
+
+                    <li class="sub-menu" id="L_DATA" runat="server">
+                        <a href="javascript:;">
+                            <i class="fa fa-desktop"></i>
+                            <span>MRS</span>
+                        </a>
+                        <ul class="sub">
+                            <li id="L_INPUTDATAALERT" runat="server"><a href="../MRS/InputData.aspx?IN=&JN=&UN=">Input Data Alert</a></li>
+                            <li id="L_DATAALERT" runat="server"><a href="../MRS/Report_DataAlert.aspx?">Data Alert</a></li>
+
+                            <li id="L_INPUTDATAKOMENTAR" runat="server"><a href="../MRS/Input_Komentar.aspx?NS=&AP=">Input Data Laporan</a></li>
+                            <li id="L_DATAKOMENTAR" runat="server"><a href="../MRS/ReportMRS.aspx">Data Laporan</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="sub-menu" id="L_REPORT" runat="server">
+                        <a href="javascript:;">
+                            <i class="fa fa-desktop"></i>
+                            <span>REPORT MRS</span>
+                        </a>
+                        <ul class="sub">
+                            <li id="L_RAPPROVAL" runat="server"><a href="../MRS/Report_Approval.aspx">Report Approval</a></li>
+                            <li id="L_RALERT" runat="server"><a href="../MRS/Report_Alert.aspx">Report Alert</a></li>
+                            <li id="L_RKOMENTAR" runat="server"><a href="../MRS/Report_Komentar.aspx">Report Status Approval</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="sub-menu" id="L_MAINTENANCE" runat="server">
+                        <a href="javascript:;">
+                            <i class="fa fa-cogs"></i>
+                            <span>MAINTENANCE</span>
+                        </a>
+                        <ul class="sub">
+                            <%--<li id="L_REGULATOR" runat="server"><a href="../MRS/InputData_Regulator.aspx?id=">Input Data Regulator</a></li>
+                            <li id="L_DATAREGULATOR" runat="server"><a href="../MRS/Report_Regulator.aspx">Data Regulator</a></li>--%>
+                            <li id="L_LAPORAN" runat="server"><a href="../MRS/InputData_Laporan.aspx?id=">Input Data Laporan</a></li>
+                            <li id="L_DATALAPORAN" runat="server"><a href="../MRS/Report_Laporan.aspx">Data Laporan</a></li>
+                            <li id="L_INPUTUSER" runat="server"><a href="../MRS/InputData_User.aspx?id=">Input Data User</a></li>
+                            <li id="L_DATAUSER" runat="server"><a href="../MRS/Report_User.aspx">Data User</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a  href="ChangePassword.aspx">
+                            <i class="fa fa-lock"></i>
+                            <span>Change Password</span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- sidebar menu end-->
+            </div>
+        </aside>
+        <!--sidebar end-->
+
+        <!--footer start-->
+        <footer class="site-footer">
+            <div class="text-center">
+                2018 - Bank Mandiri Taspen
+              <a href="../MRS/Dashboard.aspx" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+            </div>
+        </footer>
+        <!--footer end-->
+
+            <asp:ContentPlaceHolder runat="server" ID="MainContent" />
+        </section>
+
+        <!-- js placed at the end of the document so the pages load faster -->
+    <%-- <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-1.8.3.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
+    <script src="assets/js/jquery.scrollTo.min.js"></script>
+    <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
+    <script src="assets/js/jquery.sparkline.js"></script>--%>
+
+    <script src="../MRS/assets/js/jquery.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/jquery.dcjqaccordion.2.7.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/jquery.scrollTo.min.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/jquery.nicescroll.js" type="text/javascript"></script>
+    <%--<script src="../MRS/assets/js/sparkline-chart.js" type="text/javascript"></script>--%>
+
+    <!--common script for all pages-->
+        <script src="../MRS/assets/js/common-scripts.js"></script>
+    
+   <%-- <script src="../MRS/assets/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>--%>
+    <script src="../MRS/assets/js/bootstrap-formhelpers-phone.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/gritter-conf.js" type="text/javascript"></script>
+   <%-- <script src="../MRS/assets/js/sparkline-chart.js" type="text/javascript"></script>--%>
+    <script src="../MRS/assets/js/zabuto_calendar.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/gritter/js/jquery.gritter.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/date_picker.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/moment.js" type="text/javascript"></script>
+    <script src="../MRS/assets/js/onepost.js" type="text/javascript"></script>
+    <!--script for this page-->
+
+    <script type="text/javascript">
+        //$(document).ready(function () {
+        //    var unique_id = $.gritter.add({
+        //        // (string | mandatory) the heading of the notification
+        //        title: 'Selamat Datang di Aplication Monitoring Reporting System!',
+        //        // (string | mandatory) the text inside the notification
+        //        text: 'Mohon untuk melakukan pelaporkan tepat pada waktunya. Terimakasih',
+        //        // (string | optional) the image to display on the left
+        //        image: '',
+        //        // (bool | optional) if you want it to fade out on its own or just sit there
+        //        sticky: true,
+        //        // (int | optional) the time you want it to be alive for before fading out
+        //        time: '',
+        //        // (string | optional) the class name you want to apply to that specific message
+        //        class_name: 'my-sticky-class'
+        //    });
+
+        //    return false;
+        //});
+    </script>
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $("#date-popover").popover({ html: true, trigger: "manual" });
+            $("#date-popover").hide();
+            $("#date-popover").click(function (e) {
+                $(this).hide();
+            });
+
+            $("#my-calendar").zabuto_calendar({
+                action: function () {
+                    return myDateFunction(this.id, false);
+                },
+                action_nav: function () {
+                    return myNavFunction(this.id);
+                },
+                ajax: {
+                    url: "show_data.php?action=1",
+                    modal: true
+                },
+                legend: [
+                    { type: "text", label: "Special event", badge: "00" },
+                    { type: "block", label: "Regular event", }
+                ]
+            });
+        });
+
+
+        function myNavFunction(id) {
+            $("#date-popover").hide();
+            var nav = $("#" + id).data("navigation");
+            var to = $("#" + id).data("to");
+            console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
+        }
+    </script>
+        <friendlyUrls:ViewSwitcher runat="server" />
+    </div>
+    </form>
+</body>
+</html>
